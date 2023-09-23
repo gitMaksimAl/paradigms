@@ -6,7 +6,9 @@ authors = ["Maksim Aleksanin <maksim.g00gle@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.13"
+pytest = "^7.4.2"
+numpy = "^1.26.0"
 
 
 [build-system]
