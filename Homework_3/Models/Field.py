@@ -59,20 +59,22 @@ class Field2d:
         Function calculate points on the field for wins situations
         """
         end = len(self.__field)
-        y_variants = [(x, y) for x in range(0, end)
+        # horizontal lines.
+        x_variants = [(x, y) for x in range(0, end)
                       for y in range(0, end)]
-        x_variants = [(x, y) for y in range(end - 1, -1, -1)
+        # vertical lines.
+        y_variants = [(x, y) for y in range(end - 1, -1, -1)
                       for x in range(0, end)]
         # side diagonal of the matrix
-        self._variants.append([(x, x) for x in range(0, end)])
+        z_variant = [(x, x) for x in range(0, end)]
         # main diagonal of the matrix
-        self._variants.append([(x, (end - 1) - x) for x in range(0, end)])
-        # horizontal lines
+        s_variant = [(x, (end - 1) - x) for x in range(0, end)]
+        # grouping and add to instance.
+        self._variants.append([z_variant, s_variant])
         self._variants.append([x_variants[i: i + end]
-                               for i in range(0, len(x_variants))])
-        # vertical lines
+                               for i in range(0, len(x_variants), 3)])
         self._variants.append([y_variants[i: i + end]
-                               for i in range(0, len(y_variants))])
+                               for i in range(0, len(y_variants), 3)])
         # central and corners coordinates for some AI
         self._center = (end // 2, end // 2)
         self._corners = [(0, 0), (0, end), (end, 0), (end, end)]
@@ -88,3 +90,7 @@ class Field2d:
     @property
     def empty(self) -> bool:
         return self._empty
+
+    @property
+    def variants(self):
+        return self._variants
