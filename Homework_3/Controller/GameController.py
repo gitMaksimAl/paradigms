@@ -1,7 +1,7 @@
-from Homework_3.Models.Field import Field2d
-from Homework_3.Models.Gamer import FieldsGamer
-from Homework_3.Models.History import History
-from Homework_3.View import View
+from Models.Field import Field2d
+from Models.Gamer import FieldsGamer
+from Models.History import History
+from View import View
 
 
 class TicTacToe:

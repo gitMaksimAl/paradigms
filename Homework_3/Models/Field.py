@@ -1,25 +1,19 @@
-from numpy import eye
+from numpy import array
 
 
 class Field2d:
 
     def __init__(self, side_len: int):
-        n = 0
-        self.__field = eye(side_len, side_len, dtype='B')
-        for i in range(0, side_len):
-            for j in range(0, side_len):
-                self.__field[i][j] = ord(str(n))
-                n += 1
+        self.__field = \
+            array([ord(str(i)) for i in range(0, side_len ** 2)],
+                  dtype='B').reshape(side_len, side_len)
         self._corners = None
-        self._x_variants = None
-        self._y_variants = None
-        self._z_variant = None
-        self._s_variant = None
+        self._variants = list()
         self._center = None
         self._empty = True
 
     @property
-    def field(self) -> eye:
+    def field(self) -> array:
         return self.__field
 
     def reset(self) -> None:
@@ -30,33 +24,35 @@ class Field2d:
                 n += 1
         self._empty = True
 
-    def set_char(self, coords: dict) -> str:
-        char, xy = coords.popitem()
+    def _set_char(self, char: str, xy: tuple) -> str:
         x, y = xy
         try:
             if chr(self.__field[x][y]).isdigit():
                 self.__field[x][y] = ord(char)
                 return 'ack'
+            else:
+                return 'occupied'
         except IndexError:
-            return 'not found'
+            return 'occupied'
 
     # TODO: bad unpack items
     def check(self, coords: dict) -> str:
         char, xy = coords.popitem()
-        self._check_lines(self.x_variants, char, xy)
-        if
-                return 'not found'
+        result = self._set_char(char, xy)
+        if result == 'ack':
+            for line in self._variants:
+                if self._check_line(line, char, xy) == 'win':
+                    result = 'win'
+                    break
+        return result
 
-    def _check_lines(self, lines: list, char: str, xy: tuple) -> str:
-        x, y = xy
-        for i in self.y_variants:
-            if xy in i:
-                if all([chr(self.__field[j][k]) == char for j, k in i]):
+    def _check_line(self, lines: list, char: str, xy: tuple) -> str:
+        for line in lines:
+            if xy in line:
+                if all([chr(self.__field[j][k]) == char for j, k in line]):
                     return 'win'
-                else:
-                    return 'ack'
-            else:
-                return 'occupied'
+        else:
+            return 'checked'
 
     def set_variants(self) -> None:
         """"
@@ -68,32 +64,18 @@ class Field2d:
         x_variants = [(x, y) for y in range(end - 1, -1, -1)
                       for x in range(0, end)]
         # side diagonal of the matrix
-        self._z_variant = [(x, x) for x in range(0, end)]
+        self._variants.append([(x, x) for x in range(0, end)])
         # main diagonal of the matrix
-        self._s_variant = [(x, (end - 1) - x)
-                           for x in range(0, end)]
-        self._x_variants = [x_variants[i: i + end]
-                            for i in range(0, len(x_variants))]
-        self._y_variants = [y_variants[i: i + end]
-                            for i in range(0, len(y_variants))]
+        self._variants.append([(x, (end - 1) - x) for x in range(0, end)])
+        # horizontal lines
+        self._variants.append([x_variants[i: i + end]
+                               for i in range(0, len(x_variants))])
+        # vertical lines
+        self._variants.append([y_variants[i: i + end]
+                               for i in range(0, len(y_variants))])
+        # central and corners coordinates for some AI
         self._center = (end // 2, end // 2)
         self._corners = [(0, 0), (0, end), (end, 0), (end, end)]
-
-    @property
-    def y_variants(self) -> list:
-        return self._y_variants
-
-    @property
-    def x_variants(self) -> list:
-        return self._x_variants
-
-    @property
-    def z_variant(self) -> list:
-        return self._z_variant
-
-    @property
-    def s_variant(self) -> list:
-        return self._s_variant
 
     @property
     def center(self) -> list:
