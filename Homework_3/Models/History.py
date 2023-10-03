@@ -18,7 +18,7 @@ class History:
         except IOError :
             print('Cant open history file.', file=stderr)
             exit(2)
-        self.points["date"] = date.today()
+        self.points["date"] = str(date.today())
         self.points[player1_name] = 0
         self.points[player2_name] = 0
 
@@ -33,8 +33,16 @@ class History:
 
     def save(self):
         try:
-            self.save_file.write("{}\t{}\t{}".format(*self.points))
-            self.save_file.write("{}\t{}\t{}".format(*self.points.values()))
+            self.save_file.write("{:>12}\t{:>12}\t{:>12}".format(*self.points)
+                                 + '\n')
+            self.save_file.write("{:>12}\t{:>12}\t{:>12}"
+                                 .format(*self.points.values()) + '\n')
             self.save_file.close()
         except IOError:
             print('Cant write history to file.', file=stderr)
+
+    def __str__(self):
+        string = str()
+        for k, v in self.points.items():
+            string += f"{k}: {v}\n"
+        return string
