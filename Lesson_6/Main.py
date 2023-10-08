@@ -1,9 +1,8 @@
-from math import pow
-
-
 # Реализовать процедуру для вычисления MSE в любой парадигме. Программа
 # получает на вход два вектора и возвращает число - оценку MSE.
 def get_mse(true: list, be: list) -> float:
+    if len(true) == 0 or len(be) == 0:
+        return -1
     result = list(map(lambda x, y: (x - y) ** 2, true, be))
     # return 1 / len(true) * sum(result)
     return sum(result) / len(true)
@@ -13,7 +12,7 @@ def get_mse(true: list, be: list) -> float:
 def compare(left: list, right: list) -> list:
     i = 0
     j = 0
-    result = list()
+    result = []
     while i < len(left) and j < len(right):
         if left[i] < right[j]:
             result.append(left[i])
