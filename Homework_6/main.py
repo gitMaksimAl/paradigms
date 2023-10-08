@@ -2,6 +2,8 @@
 GeekBrains. Paradigms seminar 6. Homework.
 Task:
     Write script in any paradigm for binary search items in array.
+    Написать программу в любой парадигме для бинарного поиска. На вход подается
+    массив, выход - индекс элемента или -1 при отсутствии.
 Description:
     Для бинарного поиска выбрана структурная функциональная парадигма.
     Для сортировки списка данных выбрана функциональная парадигма. Используется
@@ -11,11 +13,9 @@ import random
 from typing import Any
 
 
-# Написать программу в любой парадигме для бинарного поиска. На вход подается
-# массив, выход - индекс элемента или -1 при отсутствии.
 def bin_search(target: list, value: Any) -> int:
     """
-    Binary search. Sorts the target array by built-in sorting and searches for
+    Binary search. Sorts the target list by built-in sorting and searches for
     the desired value in it. If no value is found, returns -1.
     :param target: mutable list
     :param value: Any comparable object contained in the target
@@ -26,14 +26,12 @@ def bin_search(target: list, value: Any) -> int:
                 right: int = len(target) - 1) -> int:
         if left > right:
             return -1
-        else:
-            middle = (right - left) // 2 + left
-            if ls[middle] == val:
-                return middle
-            elif ls[middle] > val:
-                return _search(ls, val, left, middle - 1)
-            else:
-                return _search(ls, val, middle + 1, right)
+        middle = (right - left) // 2 + left
+        if ls[middle] == val:
+            return middle
+        if ls[middle] > val:
+            return _search(ls, val, left, middle - 1)
+        return _search(ls, val, middle + 1, right)
 
     target.sort()
     return _search(target, value)
